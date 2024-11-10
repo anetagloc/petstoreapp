@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\PetStoreService;
+use Log;
 
 class PetStoreController extends Controller
 {
@@ -26,7 +27,7 @@ class PetStoreController extends Controller
      */
     public function create()
     {
-        return view('pets.create');
+        // return view('pets.create');
     }
 
     /**
@@ -34,19 +35,23 @@ class PetStoreController extends Controller
      */
     public function store(Request $request)
     {
-        //vadation fields
         $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|string|max:255'
         ]);
     
-        //download data and run service  method addPet
         try {
             $data = $request->all();
+    
             $response = $this->petService->addPet($data);
+            Log::info('API Response:', [
+                'request_data' => $data,
+                'response_data' => $response->json(),
+                'status_code' => $response->status()
+            ]); 
+    
             $newPetId = $response->json()['id'];
             
-            //redirect and error handling
             return redirect()->route('dashboard')->with('success', 'Pet created successfully! New Pet ID: ' . $newPetId);
         } catch (\Exception $e) {
             return redirect()->route('pets.create')->withErrors('Error creating pet: ' . $e->getMessage());
@@ -56,7 +61,7 @@ class PetStoreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id, Request $request)
+    public function show(Request $request)
     {
         try {
         //    download id from request
@@ -65,6 +70,8 @@ class PetStoreController extends Controller
             if (!$id) {
                 return redirect()->back()->withErrors(['petId' => 'ID jest wymagane']);
             }
+
+            \Log::info('Pet ID received: ' . $id);
             // run method from service
             $pet = $this->petService->getPet((int) $id);
     

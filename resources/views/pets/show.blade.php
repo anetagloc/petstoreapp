@@ -16,6 +16,7 @@
             @method('DELETE')
             <button type="submit">Delete Pet</button>
         </form>
+        <a href="{{ route('dashboard') }}">Back to homepage</a>
     </div>
 
     <script>
