@@ -3,9 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\PetStoreService;
 
 class PetStoreController extends Controller
 {
+
+    protected $petService; 
+    public function __construct(PetStoreService $petService) 
+    { 
+        $this->petService = $petService; 
+    }
     /**
      * Display a listing of the resource.
      */
