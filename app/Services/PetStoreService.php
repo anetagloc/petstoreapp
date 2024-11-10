@@ -17,12 +17,17 @@ class PetStoreService
     public function addPet(array $data)
     {
         $response = Http::post("{$this->baseUrl}", $data);
-        return $response->json();
+        return $response;
     }
 
     public function getPet(int $id)
     {
         $response = Http::get("{$this->baseUrl}/{$id}");
+        \Log::info('API GET Response:', [
+            'id' => $id,
+            'response_data' => $response->json(),
+            'status_code' => $response->status()
+        ]);
         return $response->json();
     }
     
